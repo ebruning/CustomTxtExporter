@@ -24,6 +24,7 @@ namespace CustomTxtExporter
         {
             cboOverride.Checked = _exportSettings.OverRideDefault;
             cboUseImageFileName.Checked = _exportSettings.UseImageFileName;
+            txtDestination.Text = _exportSettings.Destination;
         }
 
         private void cboOverride_CheckedChanged(object sender, EventArgs e)
@@ -49,6 +50,15 @@ namespace CustomTxtExporter
             _exportSettings.Destination = txtDestination.Text;
 
             DialogResult = DialogResult.OK;
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog {SelectedPath = txtDestination.Text};
+
+            if (folderDialog.ShowDialog() != DialogResult.OK) return;
+
+            txtDestination.Text = folderDialog.SelectedPath;
         }
     }
 }

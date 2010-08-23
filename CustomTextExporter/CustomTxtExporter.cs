@@ -17,6 +17,7 @@ namespace CustomTxtExporter
             {
                 writer.Write(_exportSettings.OverRideDefault.ToString());
                 writer.Write(_exportSettings.UseImageFileName.ToString());
+                writer.Write(_exportSettings.Destination);
             } 
         }
 
@@ -28,11 +29,13 @@ namespace CustomTxtExporter
                 {
                     _exportSettings.OverRideDefault = Convert.ToBoolean(reader.ReadString());
                     _exportSettings.UseImageFileName = Convert.ToBoolean(reader.ReadString());
+                    _exportSettings.Destination = reader.ReadString();
                 }
                 catch
                 {
                     _exportSettings.OverRideDefault = false;
                     _exportSettings.UseImageFileName = false;
+                    _exportSettings.Destination = string.Empty;
                 }
             }
         }
