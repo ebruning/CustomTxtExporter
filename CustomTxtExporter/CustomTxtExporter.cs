@@ -85,14 +85,9 @@ namespace CustomTxtExporter
             return null;
         }
 
-        public void AppendIndex(IDocument document, string outputFileName)
-        {
+        public void AppendIndex(IDocument document, string outputFileName){}
 
-        }
-
-        public void EndIndex(object handle, ReleaseResult result, string outputFileName)
-        {
-        }
+        public void EndIndex(object handle, ReleaseResult result, string outputFileName){}
 
         ReleaseMode IBatchIndexGenerator.WorkingMode
         {
