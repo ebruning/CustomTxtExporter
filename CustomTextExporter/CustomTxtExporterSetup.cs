@@ -45,6 +45,11 @@ namespace CustomTxtExporter
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            if (cboOverride.Checked && !cboUseImageFileName.Checked && string.IsNullOrEmpty(txtDestination.Text))
+            {
+                MessageBox.Show("Invalid settings.");
+                return;
+            }
             _exportSettings.OverRideDefault = cboOverride.Checked;
             _exportSettings.UseImageFileName = cboUseImageFileName.Checked;
             _exportSettings.Destination = txtDestination.Text;

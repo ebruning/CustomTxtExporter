@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -108,8 +109,8 @@ namespace CustomTxtExporter
 
         public void CreateIndex(IDocument document, IDictionary<string, string> releaseData, string outputFileName)
         {
-            if (_exportSettings.UseImageFileName)
-                outputFileName = GetIndexFileName(releaseData[string.Format("DocumentOutputFileName[{0}]", document.Number)]);
+            if (_exportSettings.OverRideDefault)
+                outputFileName = GetIndexFileName(releaseData[string.Format("DocumentOutputFileName[{0}]", document.Number)], outputFileName);
 
             using (FileStream fs = new FileStream(outputFileName, FileMode.Append, FileAccess.Write, FileShare.None))
             using (StreamWriter writer = new StreamWriter(fs, Encoding.ASCII))
@@ -128,9 +129,41 @@ namespace CustomTxtExporter
             set {}
         }
 
-        private string GetIndexFileName(string imageFileName)
+        private string GetIndexFileName(string imageFileName, string outputFileName)
         {
-            return Path.ChangeExtension(imageFileName, DefaultExtension);
+            if (string.IsNullOrEmpty(imageFileName) || string.IsNullOrEmpty(outputFileName))
+                throw new NoNullAllowedException("imageFileName is empty");
+
+            if (!_exportSettings.UseImageFileName && string.IsNullOrEmpty(_exportSettings.Destination))
+                throw new Exception("Invalid settings");
+
+            if (_exportSettings.UseImageFileName && string.IsNullOrEmpty(_exportSettings.Destination))
+                return Path.ChangeExtension(imageFileName, DefaultExtension);
+
+            if (_exportSettings.UseImageFileName && !string.IsNullOrEmpty(_exportSettings.Destination))
+            {
+                CreateDestination();
+
+                string filename = Path.GetFileName(Path.ChangeExtension(imageFileName, DefaultExtension));
+                return Path.Combine(_exportSettings.Destination, filename); 
+            }
+
+            if (!_exportSettings.UseImageFileName && !string.IsNullOrEmpty(_exportSettings.Destination))
+            {
+                CreateDestination();
+
+                string filename = Path.GetFileName(outputFileName);
+                return Path.Combine(_exportSettings.Destination, filename);
+            }
+
+            return outputFileName;
+        }
+
+        private void CreateDestination()
+        {
+            if (!string.IsNullOrEmpty(_exportSettings.Destination))
+                if (!Directory.Exists(_exportSettings.Destination))
+                    Directory.CreateDirectory(_exportSettings.Destination);
         }
     }
 }
